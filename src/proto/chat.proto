@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package alexchatapp;
+
+message ChatMessageText {
+    string text = 1;
+}
+  
+message ChatMessageAudio {
+    bytes audio = 1;
+}
+
+message ChatResponse {
+    string response_text = 1;
+}
+
+message ChatAck {
+    bool success = 1;
+}
+
+service ChatService {
+    rpc SendChatText(ChatMessageText) returns (ChatResponse);
+
+    rpc SendChatAudio(ChatMessageAudio) returns (ChatAck);
+}
