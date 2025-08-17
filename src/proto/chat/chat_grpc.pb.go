@@ -19,18 +19,16 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ChatService_ProcessChatText_FullMethodName  = "/alexchatapp.ChatService/ProcessChatText"
-	ChatService_ProcessChatAudio_FullMethodName = "/alexchatapp.ChatService/ProcessChatAudio"
+	ChatService_SendChatText_FullMethodName  = "/alexchatapp.ChatService/SendChatText"
+	ChatService_SendChatAudio_FullMethodName = "/alexchatapp.ChatService/SendChatAudio"
 )
 
 // ChatServiceClient is the client API for ChatService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ChatServiceClient interface {
-	// Client sends text and gets text
-	ProcessChatText(ctx context.Context, in *ChatMessageText, opts ...grpc.CallOption) (*ChatResponse, error)
-	// Client sends audio and gets confirmation
-	ProcessChatAudio(ctx context.Context, in *ChatMessageAudio, opts ...grpc.CallOption) (*ChatAck, error)
+	SendChatText(ctx context.Context, in *ChatMessageText, opts ...grpc.CallOption) (*Ack, error)
+	SendChatAudio(ctx context.Context, in *ChatMessageAudio, opts ...grpc.CallOption) (*Ack, error)
 }
 
 type chatServiceClient struct {
@@ -41,20 +39,20 @@ func NewChatServiceClient(cc grpc.ClientConnInterface) ChatServiceClient {
 	return &chatServiceClient{cc}
 }
 
-func (c *chatServiceClient) ProcessChatText(ctx context.Context, in *ChatMessageText, opts ...grpc.CallOption) (*ChatResponse, error) {
+func (c *chatServiceClient) SendChatText(ctx context.Context, in *ChatMessageText, opts ...grpc.CallOption) (*Ack, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ChatResponse)
-	err := c.cc.Invoke(ctx, ChatService_ProcessChatText_FullMethodName, in, out, cOpts...)
+	out := new(Ack)
+	err := c.cc.Invoke(ctx, ChatService_SendChatText_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *chatServiceClient) ProcessChatAudio(ctx context.Context, in *ChatMessageAudio, opts ...grpc.CallOption) (*ChatAck, error) {
+func (c *chatServiceClient) SendChatAudio(ctx context.Context, in *ChatMessageAudio, opts ...grpc.CallOption) (*Ack, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ChatAck)
-	err := c.cc.Invoke(ctx, ChatService_ProcessChatAudio_FullMethodName, in, out, cOpts...)
+	out := new(Ack)
+	err := c.cc.Invoke(ctx, ChatService_SendChatAudio_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -65,10 +63,8 @@ func (c *chatServiceClient) ProcessChatAudio(ctx context.Context, in *ChatMessag
 // All implementations must embed UnimplementedChatServiceServer
 // for forward compatibility.
 type ChatServiceServer interface {
-	// Client sends text and gets text
-	ProcessChatText(context.Context, *ChatMessageText) (*ChatResponse, error)
-	// Client sends audio and gets confirmation
-	ProcessChatAudio(context.Context, *ChatMessageAudio) (*ChatAck, error)
+	SendChatText(context.Context, *ChatMessageText) (*Ack, error)
+	SendChatAudio(context.Context, *ChatMessageAudio) (*Ack, error)
 	mustEmbedUnimplementedChatServiceServer()
 }
 
@@ -79,11 +75,11 @@ type ChatServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedChatServiceServer struct{}
 
-func (UnimplementedChatServiceServer) ProcessChatText(context.Context, *ChatMessageText) (*ChatResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ProcessChatText not implemented")
+func (UnimplementedChatServiceServer) SendChatText(context.Context, *ChatMessageText) (*Ack, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendChatText not implemented")
 }
-func (UnimplementedChatServiceServer) ProcessChatAudio(context.Context, *ChatMessageAudio) (*ChatAck, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ProcessChatAudio not implemented")
+func (UnimplementedChatServiceServer) SendChatAudio(context.Context, *ChatMessageAudio) (*Ack, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendChatAudio not implemented")
 }
 func (UnimplementedChatServiceServer) mustEmbedUnimplementedChatServiceServer() {}
 func (UnimplementedChatServiceServer) testEmbeddedByValue()                     {}
@@ -106,38 +102,38 @@ func RegisterChatServiceServer(s grpc.ServiceRegistrar, srv ChatServiceServer) {
 	s.RegisterService(&ChatService_ServiceDesc, srv)
 }
 
-func _ChatService_ProcessChatText_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ChatService_SendChatText_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ChatMessageText)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ChatServiceServer).ProcessChatText(ctx, in)
+		return srv.(ChatServiceServer).SendChatText(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ChatService_ProcessChatText_FullMethodName,
+		FullMethod: ChatService_SendChatText_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChatServiceServer).ProcessChatText(ctx, req.(*ChatMessageText))
+		return srv.(ChatServiceServer).SendChatText(ctx, req.(*ChatMessageText))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ChatService_ProcessChatAudio_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ChatService_SendChatAudio_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ChatMessageAudio)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ChatServiceServer).ProcessChatAudio(ctx, in)
+		return srv.(ChatServiceServer).SendChatAudio(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ChatService_ProcessChatAudio_FullMethodName,
+		FullMethod: ChatService_SendChatAudio_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChatServiceServer).ProcessChatAudio(ctx, req.(*ChatMessageAudio))
+		return srv.(ChatServiceServer).SendChatAudio(ctx, req.(*ChatMessageAudio))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -150,12 +146,12 @@ var ChatService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ChatServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "ProcessChatText",
-			Handler:    _ChatService_ProcessChatText_Handler,
+			MethodName: "SendChatText",
+			Handler:    _ChatService_SendChatText_Handler,
 		},
 		{
-			MethodName: "ProcessChatAudio",
-			Handler:    _ChatService_ProcessChatAudio_Handler,
+			MethodName: "SendChatAudio",
+			Handler:    _ChatService_SendChatAudio_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

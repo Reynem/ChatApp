@@ -1,25 +1,26 @@
 syntax = "proto3";
 
+option go_package = "src/proto/chat;proto";
+
 package alexchatapp;
 
 message ChatMessageText {
     string text = 1;
+    string user_id = 2;
 }
   
 message ChatMessageAudio {
     bytes audio = 1;
+    string user_id = 2;
 }
 
-message ChatResponse {
-    string response_text = 1;
-}
-
-message ChatAck {
-    bool success = 1;
+message Ack {
+    bool response = 1;
+    string response_text = 2;
 }
 
 service ChatService {
-    rpc SendChatText(ChatMessageText) returns (ChatResponse);
+    rpc SendChatText(ChatMessageText) returns (Ack);
 
-    rpc SendChatAudio(ChatMessageAudio) returns (ChatAck);
+    rpc SendChatAudio(ChatMessageAudio) returns (Ack);
 }

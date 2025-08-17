@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+option go_package = "src/proto/auth;proto";
+
+package alexchatapp;
+
+message LoginRequest {
+    string username = 1;
+    string password = 2;
+}
+
+message RegisterRequest {
+    string username = 1;
+    string email = 2;
+    string password = 3;
+}
+
+message Response {
+    bool success = 1;
+    string token = 2;
+    string error_text = 3;
+}
+
+service AuthService {
+    rpc Register (RegisterRequest) returns (Response);
+    rpc Login (LoginRequest) returns (Response);
+}

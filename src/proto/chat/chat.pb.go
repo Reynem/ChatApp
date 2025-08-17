@@ -24,6 +24,7 @@ const (
 type ChatMessageText struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Text          string                 `protobuf:"bytes,1,opt,name=text,proto3" json:"text,omitempty"`
+	UserId        string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -65,9 +66,17 @@ func (x *ChatMessageText) GetText() string {
 	return ""
 }
 
+func (x *ChatMessageText) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
 type ChatMessageAudio struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Audio         []byte                 `protobuf:"bytes,1,opt,name=audio,proto3" json:"audio,omitempty"`
+	UserId        string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -109,27 +118,35 @@ func (x *ChatMessageAudio) GetAudio() []byte {
 	return nil
 }
 
-type ChatResponse struct {
+func (x *ChatMessageAudio) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+type Ack struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	ResponseText  string                 `protobuf:"bytes,1,opt,name=response_text,json=responseText,proto3" json:"response_text,omitempty"`
+	Response      bool                   `protobuf:"varint,1,opt,name=response,proto3" json:"response,omitempty"`
+	ResponseText  string                 `protobuf:"bytes,2,opt,name=response_text,json=responseText,proto3" json:"response_text,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *ChatResponse) Reset() {
-	*x = ChatResponse{}
+func (x *Ack) Reset() {
+	*x = Ack{}
 	mi := &file_src_proto_chat_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ChatResponse) String() string {
+func (x *Ack) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ChatResponse) ProtoMessage() {}
+func (*Ack) ProtoMessage() {}
 
-func (x *ChatResponse) ProtoReflect() protoreflect.Message {
+func (x *Ack) ProtoReflect() protoreflect.Message {
 	mi := &file_src_proto_chat_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -141,78 +158,42 @@ func (x *ChatResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ChatResponse.ProtoReflect.Descriptor instead.
-func (*ChatResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use Ack.ProtoReflect.Descriptor instead.
+func (*Ack) Descriptor() ([]byte, []int) {
 	return file_src_proto_chat_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *ChatResponse) GetResponseText() string {
+func (x *Ack) GetResponse() bool {
+	if x != nil {
+		return x.Response
+	}
+	return false
+}
+
+func (x *Ack) GetResponseText() string {
 	if x != nil {
 		return x.ResponseText
 	}
 	return ""
 }
 
-type ChatAck struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ChatAck) Reset() {
-	*x = ChatAck{}
-	mi := &file_src_proto_chat_proto_msgTypes[3]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ChatAck) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ChatAck) ProtoMessage() {}
-
-func (x *ChatAck) ProtoReflect() protoreflect.Message {
-	mi := &file_src_proto_chat_proto_msgTypes[3]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ChatAck.ProtoReflect.Descriptor instead.
-func (*ChatAck) Descriptor() ([]byte, []int) {
-	return file_src_proto_chat_proto_rawDescGZIP(), []int{3}
-}
-
-func (x *ChatAck) GetSuccess() bool {
-	if x != nil {
-		return x.Success
-	}
-	return false
-}
-
 var File_src_proto_chat_proto protoreflect.FileDescriptor
 
 const file_src_proto_chat_proto_rawDesc = "" +
 	"\n" +
-	"\x14src/proto/chat.proto\x12\valexchatapp\"%\n" +
+	"\x14src/proto/chat.proto\x12\valexchatapp\">\n" +
 	"\x0fChatMessageText\x12\x12\n" +
-	"\x04text\x18\x01 \x01(\tR\x04text\"(\n" +
+	"\x04text\x18\x01 \x01(\tR\x04text\x12\x17\n" +
+	"\auser_id\x18\x02 \x01(\tR\x06userId\"A\n" +
 	"\x10ChatMessageAudio\x12\x14\n" +
-	"\x05audio\x18\x01 \x01(\fR\x05audio\"3\n" +
-	"\fChatResponse\x12#\n" +
-	"\rresponse_text\x18\x01 \x01(\tR\fresponseText\"#\n" +
-	"\aChatAck\x12\x18\n" +
-	"\asuccess\x18\x01 \x01(\bR\asuccess2\xa2\x01\n" +
-	"\vChatService\x12J\n" +
-	"\x0fProcessChatText\x12\x1c.alexchatapp.ChatMessageText\x1a\x19.alexchatapp.ChatResponse\x12G\n" +
-	"\x10ProcessChatAudio\x12\x1d.alexchatapp.ChatMessageAudio\x1a\x14.alexchatapp.ChatAckB\x19Z\x17alexchatapp/proto;protob\x06proto3"
+	"\x05audio\x18\x01 \x01(\fR\x05audio\x12\x17\n" +
+	"\auser_id\x18\x02 \x01(\tR\x06userId\"F\n" +
+	"\x03Ack\x12\x1a\n" +
+	"\bresponse\x18\x01 \x01(\bR\bresponse\x12#\n" +
+	"\rresponse_text\x18\x02 \x01(\tR\fresponseText2\x8f\x01\n" +
+	"\vChatService\x12>\n" +
+	"\fSendChatText\x12\x1c.alexchatapp.ChatMessageText\x1a\x10.alexchatapp.Ack\x12@\n" +
+	"\rSendChatAudio\x12\x1d.alexchatapp.ChatMessageAudio\x1a\x10.alexchatapp.AckB\x16Z\x14src/proto/chat;protob\x06proto3"
 
 var (
 	file_src_proto_chat_proto_rawDescOnce sync.Once
@@ -226,18 +207,17 @@ func file_src_proto_chat_proto_rawDescGZIP() []byte {
 	return file_src_proto_chat_proto_rawDescData
 }
 
-var file_src_proto_chat_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_src_proto_chat_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_src_proto_chat_proto_goTypes = []any{
 	(*ChatMessageText)(nil),  // 0: alexchatapp.ChatMessageText
 	(*ChatMessageAudio)(nil), // 1: alexchatapp.ChatMessageAudio
-	(*ChatResponse)(nil),     // 2: alexchatapp.ChatResponse
-	(*ChatAck)(nil),          // 3: alexchatapp.ChatAck
+	(*Ack)(nil),              // 2: alexchatapp.Ack
 }
 var file_src_proto_chat_proto_depIdxs = []int32{
-	0, // 0: alexchatapp.ChatService.ProcessChatText:input_type -> alexchatapp.ChatMessageText
-	1, // 1: alexchatapp.ChatService.ProcessChatAudio:input_type -> alexchatapp.ChatMessageAudio
-	2, // 2: alexchatapp.ChatService.ProcessChatText:output_type -> alexchatapp.ChatResponse
-	3, // 3: alexchatapp.ChatService.ProcessChatAudio:output_type -> alexchatapp.ChatAck
+	0, // 0: alexchatapp.ChatService.SendChatText:input_type -> alexchatapp.ChatMessageText
+	1, // 1: alexchatapp.ChatService.SendChatAudio:input_type -> alexchatapp.ChatMessageAudio
+	2, // 2: alexchatapp.ChatService.SendChatText:output_type -> alexchatapp.Ack
+	2, // 3: alexchatapp.ChatService.SendChatAudio:output_type -> alexchatapp.Ack
 	2, // [2:4] is the sub-list for method output_type
 	0, // [0:2] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
@@ -256,7 +236,7 @@ func file_src_proto_chat_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_src_proto_chat_proto_rawDesc), len(file_src_proto_chat_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
