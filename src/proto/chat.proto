@@ -4,23 +4,63 @@ option go_package = "src/proto/chat;proto";
 
 package alexchatapp;
 
-message ChatMessageText {
-    string text = 1;
-    string user_id = 2;
-}
-  
-message ChatMessageAudio {
-    bytes audio = 1;
-    string user_id = 2;
+message ChatMessage {
+    string id = 1;
+    string chat_id = 2;
+    string sender_id = 3;
+    int64 timestamp = 4;
+
+    enum status {
+        SENT = 0;
+        RECEIVED = 1;
+        READ = 2;
+    }
+    status message_status = 5;
+
+    oneof content {
+        string text = 6;
+        bytes audio_data = 7;
+        bytes image_data = 8;
+    }
 }
 
-message Ack {
-    bool response = 1;
-    string response_text = 2;
+message GetChatsRequest {
+    string user_id = 1;
+}
+
+message Chat {
+    string id = 1;
+    string name = 2;
+    optional string description = 3;
+}
+
+message GetChatsResponse {
+    repeated Chat chats = 1;
+}
+
+message GetMessagesRequest {
+    string chat_id = 1;
+    int32 count = 2;
+    int64 before_timestamp = 3;
+}
+
+message GetMessagesResponse {
+    repeated ChatMessage messages = 1;
+}
+
+message CreateChatRequest {
+    string name = 1;
+    repeated string participants_ids = 2;
+}
+
+message CreateChatResponse {
+    string chat_id = 1;
 }
 
 service ChatService {
-    rpc SendChatText(ChatMessageText) returns (Ack);
-
-    rpc SendChatAudio(ChatMessageAudio) returns (Ack);
+    rpc ChatStream (stream ChatMessage) returns (stream ChatMessage);
+    
+    rpc GetChats(GetChatsRequest) returns (GetChatsResponse);
+    rpc GetMessages(GetMessagesRequest) returns (GetMessagesResponse);
+    rpc CreateChat(CreateChatRequest) returns (CreateChatResponse);
 }
