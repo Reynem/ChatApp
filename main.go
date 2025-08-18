@@ -1,9 +1,9 @@
 package main
 
 import (
-	"fmt"
+	acp "alexchatapp/src"
 )
 
 func main() {
-	fmt.Println("Hello world")
+	acp.Server()
 }
