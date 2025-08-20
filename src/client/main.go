@@ -1,9 +1,9 @@
 package main
 
 import (
-	acp "alexchatapp/src"
+	authtest "alexchatapp/src/tests"
 )
 
 func main() {
-	acp.AuthClientExample()
+	authtest.AuthClientExample()
 }

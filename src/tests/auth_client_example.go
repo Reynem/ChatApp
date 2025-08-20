@@ -1,4 +1,4 @@
-package alexchatapp
+package tests
 
 import (
 	"context"
