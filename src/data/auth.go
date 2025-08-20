@@ -133,7 +133,7 @@ func (r *AuthRepository) RegisterUser(username, email, password string) (*models
 	return user, nil
 }
 
-// AuthenticateUser authenticates a user
+// AuthenticateUser authenticates a user (Login)
 func (r *AuthRepository) AuthenticateUser(username, password string) (*models.User, error) {
 	// Find user
 	user, err := r.GetUserByUsername(username)
