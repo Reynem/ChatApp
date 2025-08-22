@@ -2,8 +2,10 @@ package alexchatapp
 
 import (
 	"context"
+	"log"
 
 	"alexchatapp/src/data"
+	"alexchatapp/src/jwt"
 	pb "alexchatapp/src/proto/auth"
 	"alexchatapp/src/utils"
 )
@@ -11,15 +13,17 @@ import (
 // AuthServer implements AuthService from proto file
 type AuthServer struct {
 	pb.UnimplementedAuthServiceServer
-	chat_repo *data.ChatRepository
-	auth_repo *data.AuthRepository
+	chat_repo  *data.ChatRepository
+	auth_repo  *data.AuthRepository
+	jwtService *jwt.JwtKey
 }
 
 // NewAuthServer creates a new authentication server instance
-func NewAuthServer(chat_repo *data.ChatRepository, auth_repo *data.AuthRepository) *AuthServer {
+func NewAuthServer(chat_repo *data.ChatRepository, auth_repo *data.AuthRepository, secret_key *jwt.JwtKey) *AuthServer {
 	return &AuthServer{
-		chat_repo: chat_repo,
-		auth_repo: auth_repo,
+		chat_repo:  chat_repo,
+		auth_repo:  auth_repo,
+		jwtService: secret_key,
 	}
 }
 
@@ -67,17 +71,18 @@ func (s *AuthServer) Register(ctx context.Context, req *pb.RegisterRequest) (*pb
 	}
 
 	// Generate token
-	// token, err := generateToken()
-	// if err != nil {
-	// 	return &pb.Response{
-	// 		Success:   false,
-	// 		ErrorText: "Error generating token",
-	// 	}, nil
-	// }
+	token, err := s.jwtService.GenerateToken(req.Username)
+	if err != nil {
+		log.Printf("JWT generation error: %v", err)
+		return &pb.Response{
+			Success:   false,
+			ErrorText: "Error generating token",
+		}, nil
+	}
 
 	return &pb.Response{
 		Success: true,
-		Token:   "token",
+		Token:   token,
 	}, nil
 }
 
@@ -100,16 +105,17 @@ func (s *AuthServer) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Respo
 	}
 
 	// Generate token
-	// token, err := generateToken()
-	// if err != nil {
-	// 	return &pb.Response{
-	// 		Success:   false,
-	// 		ErrorText: "Error generating token",
-	// 	}, nil
-	// }
+	token, err := s.jwtService.GenerateToken(req.Username)
+	if err != nil {
+		log.Printf("JWT generation error: %v", err)
+		return &pb.Response{
+			Success:   false,
+			ErrorText: "Error generating token",
+		}, nil
+	}
 
 	return &pb.Response{
 		Success: true,
-		Token:   "token",
+		Token:   token,
 	}, nil
 }

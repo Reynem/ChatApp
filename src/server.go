@@ -2,6 +2,7 @@ package alexchatapp
 
 import (
 	"alexchatapp/src/data"
+	"alexchatapp/src/jwt"
 	pb "alexchatapp/src/proto/auth"
 	"log"
 	"net"
@@ -25,12 +26,16 @@ func Server() {
 		log.Fatalf("Database connection error: %v", err)
 	}
 
+	// Getting sercret variable
+	secret_key := os.Getenv("SECRET_KEY")
+	jwt_key := jwt.JwtKey{SecretKey: []byte(secret_key)}
+
 	// Create repositories
 	chat_repo := data.NewChatRepository(db)
 	auth_repo := data.NewAuthRepository(db)
 
 	// Create authentication server
-	authServer := NewAuthServer(chat_repo, auth_repo)
+	authServer := NewAuthServer(chat_repo, auth_repo, &jwt_key)
 
 	// Create gRPC server
 	grpcServer := grpc.NewServer()
