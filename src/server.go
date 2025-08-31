@@ -38,7 +38,10 @@ func Server() {
 	authServer := NewAuthServer(chat_repo, auth_repo, &jwt_key)
 
 	// Create gRPC server
-	grpcServer := grpc.NewServer()
+	grpcServer := grpc.NewServer(
+		grpc.UnaryInterceptor(jwt.JWTUnaryInterceptor()),
+	)
+
 	pb.RegisterAuthServiceServer(grpcServer, authServer)
 
 	// Start server
