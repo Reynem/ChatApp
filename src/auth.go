@@ -14,12 +14,12 @@ import (
 type AuthServer struct {
 	pb.UnimplementedAuthServiceServer
 	chat_repo  *data.ChatRepository
-	auth_repo  *data.AuthRepository
+	auth_repo  *data.UsersRepository
 	jwtService *jwt.JwtKey
 }
 
 // NewAuthServer creates a new authentication server instance
-func NewAuthServer(chat_repo *data.ChatRepository, auth_repo *data.AuthRepository, secret_key *jwt.JwtKey) *AuthServer {
+func NewAuthServer(chat_repo *data.ChatRepository, auth_repo *data.UsersRepository, secret_key *jwt.JwtKey) *AuthServer {
 	return &AuthServer{
 		chat_repo:  chat_repo,
 		auth_repo:  auth_repo,

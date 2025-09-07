@@ -32,7 +32,7 @@ func Server() {
 
 	// Create repositories
 	chat_repo := data.NewChatRepository(db)
-	auth_repo := data.NewAuthRepository(db)
+	auth_repo := data.NewUsersRepository(db)
 
 	// Create authentication server
 	authServer := NewAuthServer(chat_repo, auth_repo, &jwt_key)
