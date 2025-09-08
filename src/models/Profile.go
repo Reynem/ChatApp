@@ -5,10 +5,10 @@ import (
 )
 
 type Profile struct {
-	user_id      uint      `json:"id"`
-	profile_name string    `json:"profile_name"`
-	bio          string    `json:"bio"`
-	avatar_url   string    `json:"avatar_url"`
-	status       string    `json:"status"`
-	last_seen    time.Time `json:"last_seen"`
+	User_id      uint      `json:"id"`
+	Profile_name string    `json:"profile_name"`
+	Bio          string    `json:"bio"`
+	Avatar_url   string    `json:"avatar_url"`
+	Status       string    `json:"status"`
+	Last_seen    time.Time `json:"last_seen"`
 }
