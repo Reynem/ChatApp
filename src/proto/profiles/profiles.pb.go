@@ -9,6 +9,7 @@ package proto
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -25,10 +26,10 @@ type Profile struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	UserId        uint64                 `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	ProfileName   string                 `protobuf:"bytes,2,opt,name=profile_name,json=profileName,proto3" json:"profile_name,omitempty"`
-	Bio           string                 `protobuf:"bytes,3,opt,name=bio,proto3" json:"bio,omitempty"`
-	AvatarUrl     string                 `protobuf:"bytes,4,opt,name=avatar_url,json=avatarUrl,proto3" json:"avatar_url,omitempty"`
-	Status        string                 `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
-	LastSeen      string                 `protobuf:"bytes,6,opt,name=last_seen,json=lastSeen,proto3" json:"last_seen,omitempty"`
+	Bio           *string                `protobuf:"bytes,3,opt,name=bio,proto3,oneof" json:"bio,omitempty"`
+	AvatarUrl     *string                `protobuf:"bytes,4,opt,name=avatar_url,json=avatarUrl,proto3,oneof" json:"avatar_url,omitempty"`
+	Status        *string                `protobuf:"bytes,5,opt,name=status,proto3,oneof" json:"status,omitempty"`
+	LastSeen      *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=last_seen,json=lastSeen,proto3" json:"last_seen,omitempty"` // Ignore
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -78,31 +79,151 @@ func (x *Profile) GetProfileName() string {
 }
 
 func (x *Profile) GetBio() string {
-	if x != nil {
-		return x.Bio
+	if x != nil && x.Bio != nil {
+		return *x.Bio
 	}
 	return ""
 }
 
 func (x *Profile) GetAvatarUrl() string {
-	if x != nil {
-		return x.AvatarUrl
+	if x != nil && x.AvatarUrl != nil {
+		return *x.AvatarUrl
 	}
 	return ""
 }
 
 func (x *Profile) GetStatus() string {
-	if x != nil {
-		return x.Status
+	if x != nil && x.Status != nil {
+		return *x.Status
 	}
 	return ""
 }
 
-func (x *Profile) GetLastSeen() string {
+func (x *Profile) GetLastSeen() *timestamppb.Timestamp {
 	if x != nil {
 		return x.LastSeen
 	}
+	return nil
+}
+
+type CreateProfileRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        uint64                 `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	ProfileName   string                 `protobuf:"bytes,2,opt,name=profile_name,json=profileName,proto3" json:"profile_name,omitempty"`
+	Bio           *string                `protobuf:"bytes,3,opt,name=bio,proto3,oneof" json:"bio,omitempty"`
+	AvatarUrl     *string                `protobuf:"bytes,4,opt,name=avatar_url,json=avatarUrl,proto3,oneof" json:"avatar_url,omitempty"`
+	Status        *string                `protobuf:"bytes,5,opt,name=status,proto3,oneof" json:"status,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateProfileRequest) Reset() {
+	*x = CreateProfileRequest{}
+	mi := &file_src_proto_profiles_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateProfileRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateProfileRequest) ProtoMessage() {}
+
+func (x *CreateProfileRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_src_proto_profiles_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateProfileRequest.ProtoReflect.Descriptor instead.
+func (*CreateProfileRequest) Descriptor() ([]byte, []int) {
+	return file_src_proto_profiles_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *CreateProfileRequest) GetUserId() uint64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+func (x *CreateProfileRequest) GetProfileName() string {
+	if x != nil {
+		return x.ProfileName
+	}
 	return ""
+}
+
+func (x *CreateProfileRequest) GetBio() string {
+	if x != nil && x.Bio != nil {
+		return *x.Bio
+	}
+	return ""
+}
+
+func (x *CreateProfileRequest) GetAvatarUrl() string {
+	if x != nil && x.AvatarUrl != nil {
+		return *x.AvatarUrl
+	}
+	return ""
+}
+
+func (x *CreateProfileRequest) GetStatus() string {
+	if x != nil && x.Status != nil {
+		return *x.Status
+	}
+	return ""
+}
+
+type CreateProfileResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	StatusCode    int64                  `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateProfileResponse) Reset() {
+	*x = CreateProfileResponse{}
+	mi := &file_src_proto_profiles_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateProfileResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateProfileResponse) ProtoMessage() {}
+
+func (x *CreateProfileResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_src_proto_profiles_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateProfileResponse.ProtoReflect.Descriptor instead.
+func (*CreateProfileResponse) Descriptor() ([]byte, []int) {
+	return file_src_proto_profiles_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *CreateProfileResponse) GetStatusCode() int64 {
+	if x != nil {
+		return x.StatusCode
+	}
+	return 0
 }
 
 type GetProfileRequest struct {
@@ -114,7 +235,7 @@ type GetProfileRequest struct {
 
 func (x *GetProfileRequest) Reset() {
 	*x = GetProfileRequest{}
-	mi := &file_src_proto_profiles_proto_msgTypes[1]
+	mi := &file_src_proto_profiles_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -126,7 +247,7 @@ func (x *GetProfileRequest) String() string {
 func (*GetProfileRequest) ProtoMessage() {}
 
 func (x *GetProfileRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_src_proto_profiles_proto_msgTypes[1]
+	mi := &file_src_proto_profiles_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -139,7 +260,7 @@ func (x *GetProfileRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetProfileRequest.ProtoReflect.Descriptor instead.
 func (*GetProfileRequest) Descriptor() ([]byte, []int) {
-	return file_src_proto_profiles_proto_rawDescGZIP(), []int{1}
+	return file_src_proto_profiles_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *GetProfileRequest) GetUserId() uint64 {
@@ -158,7 +279,7 @@ type GetProfileResponse struct {
 
 func (x *GetProfileResponse) Reset() {
 	*x = GetProfileResponse{}
-	mi := &file_src_proto_profiles_proto_msgTypes[2]
+	mi := &file_src_proto_profiles_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -170,7 +291,7 @@ func (x *GetProfileResponse) String() string {
 func (*GetProfileResponse) ProtoMessage() {}
 
 func (x *GetProfileResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_src_proto_profiles_proto_msgTypes[2]
+	mi := &file_src_proto_profiles_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -183,7 +304,7 @@ func (x *GetProfileResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetProfileResponse.ProtoReflect.Descriptor instead.
 func (*GetProfileResponse) Descriptor() ([]byte, []int) {
-	return file_src_proto_profiles_proto_rawDescGZIP(), []int{2}
+	return file_src_proto_profiles_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *GetProfileResponse) GetProfile() *Profile {
@@ -195,18 +316,18 @@ func (x *GetProfileResponse) GetProfile() *Profile {
 
 type UpdateProfileRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	ProfileName   string                 `protobuf:"bytes,1,opt,name=profile_name,json=profileName,proto3" json:"profile_name,omitempty"`
-	Bio           string                 `protobuf:"bytes,2,opt,name=bio,proto3" json:"bio,omitempty"`
-	AvatarUrl     string                 `protobuf:"bytes,3,opt,name=avatar_url,json=avatarUrl,proto3" json:"avatar_url,omitempty"`
-	Status        string                 `protobuf:"bytes,4,opt,name=status,proto3" json:"status,omitempty"`
-	LastSeen      string                 `protobuf:"bytes,5,opt,name=last_seen,json=lastSeen,proto3" json:"last_seen,omitempty"`
+	UserId        uint64                 `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	ProfileName   *string                `protobuf:"bytes,2,opt,name=profile_name,json=profileName,proto3,oneof" json:"profile_name,omitempty"`
+	Bio           *string                `protobuf:"bytes,3,opt,name=bio,proto3,oneof" json:"bio,omitempty"`
+	AvatarUrl     *string                `protobuf:"bytes,4,opt,name=avatar_url,json=avatarUrl,proto3,oneof" json:"avatar_url,omitempty"`
+	Status        *string                `protobuf:"bytes,5,opt,name=status,proto3,oneof" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *UpdateProfileRequest) Reset() {
 	*x = UpdateProfileRequest{}
-	mi := &file_src_proto_profiles_proto_msgTypes[3]
+	mi := &file_src_proto_profiles_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -218,7 +339,7 @@ func (x *UpdateProfileRequest) String() string {
 func (*UpdateProfileRequest) ProtoMessage() {}
 
 func (x *UpdateProfileRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_src_proto_profiles_proto_msgTypes[3]
+	mi := &file_src_proto_profiles_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -231,54 +352,55 @@ func (x *UpdateProfileRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateProfileRequest.ProtoReflect.Descriptor instead.
 func (*UpdateProfileRequest) Descriptor() ([]byte, []int) {
-	return file_src_proto_profiles_proto_rawDescGZIP(), []int{3}
+	return file_src_proto_profiles_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *UpdateProfileRequest) GetUserId() uint64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
 }
 
 func (x *UpdateProfileRequest) GetProfileName() string {
-	if x != nil {
-		return x.ProfileName
+	if x != nil && x.ProfileName != nil {
+		return *x.ProfileName
 	}
 	return ""
 }
 
 func (x *UpdateProfileRequest) GetBio() string {
-	if x != nil {
-		return x.Bio
+	if x != nil && x.Bio != nil {
+		return *x.Bio
 	}
 	return ""
 }
 
 func (x *UpdateProfileRequest) GetAvatarUrl() string {
-	if x != nil {
-		return x.AvatarUrl
+	if x != nil && x.AvatarUrl != nil {
+		return *x.AvatarUrl
 	}
 	return ""
 }
 
 func (x *UpdateProfileRequest) GetStatus() string {
-	if x != nil {
-		return x.Status
-	}
-	return ""
-}
-
-func (x *UpdateProfileRequest) GetLastSeen() string {
-	if x != nil {
-		return x.LastSeen
+	if x != nil && x.Status != nil {
+		return *x.Status
 	}
 	return ""
 }
 
 type UpdateProfileResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Response      string                 `protobuf:"bytes,1,opt,name=response,proto3" json:"response,omitempty"`
+	StatusCode    int64                  `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code,omitempty"`
+	Response      *string                `protobuf:"bytes,2,opt,name=response,proto3,oneof" json:"response,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *UpdateProfileResponse) Reset() {
 	*x = UpdateProfileResponse{}
-	mi := &file_src_proto_profiles_proto_msgTypes[4]
+	mi := &file_src_proto_profiles_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -290,7 +412,7 @@ func (x *UpdateProfileResponse) String() string {
 func (*UpdateProfileResponse) ProtoMessage() {}
 
 func (x *UpdateProfileResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_src_proto_profiles_proto_msgTypes[4]
+	mi := &file_src_proto_profiles_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -303,42 +425,171 @@ func (x *UpdateProfileResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateProfileResponse.ProtoReflect.Descriptor instead.
 func (*UpdateProfileResponse) Descriptor() ([]byte, []int) {
-	return file_src_proto_profiles_proto_rawDescGZIP(), []int{4}
+	return file_src_proto_profiles_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *UpdateProfileResponse) GetStatusCode() int64 {
+	if x != nil {
+		return x.StatusCode
+	}
+	return 0
 }
 
 func (x *UpdateProfileResponse) GetResponse() string {
-	if x != nil {
-		return x.Response
+	if x != nil && x.Response != nil {
+		return *x.Response
 	}
 	return ""
+}
+
+type UpdateOnlineStatusRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	LastSeen      *timestamppb.Timestamp `protobuf:"bytes,1,opt,name=last_seen,json=lastSeen,proto3" json:"last_seen,omitempty"` // Ignore
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateOnlineStatusRequest) Reset() {
+	*x = UpdateOnlineStatusRequest{}
+	mi := &file_src_proto_profiles_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateOnlineStatusRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateOnlineStatusRequest) ProtoMessage() {}
+
+func (x *UpdateOnlineStatusRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_src_proto_profiles_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateOnlineStatusRequest.ProtoReflect.Descriptor instead.
+func (*UpdateOnlineStatusRequest) Descriptor() ([]byte, []int) {
+	return file_src_proto_profiles_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *UpdateOnlineStatusRequest) GetLastSeen() *timestamppb.Timestamp {
+	if x != nil {
+		return x.LastSeen
+	}
+	return nil
+}
+
+type UpdateOnlineStatusResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	StatusCode    int64                  `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateOnlineStatusResponse) Reset() {
+	*x = UpdateOnlineStatusResponse{}
+	mi := &file_src_proto_profiles_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateOnlineStatusResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateOnlineStatusResponse) ProtoMessage() {}
+
+func (x *UpdateOnlineStatusResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_src_proto_profiles_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateOnlineStatusResponse.ProtoReflect.Descriptor instead.
+func (*UpdateOnlineStatusResponse) Descriptor() ([]byte, []int) {
+	return file_src_proto_profiles_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *UpdateOnlineStatusResponse) GetStatusCode() int64 {
+	if x != nil {
+		return x.StatusCode
+	}
+	return 0
 }
 
 var File_src_proto_profiles_proto protoreflect.FileDescriptor
 
 const file_src_proto_profiles_proto_rawDesc = "" +
 	"\n" +
-	"\x18src/proto/profiles.proto\x12\valexchatapp\"\xab\x01\n" +
+	"\x18src/proto/profiles.proto\x12\valexchatapp\x1a\x1fgoogle/protobuf/timestamp.proto\"\xf8\x01\n" +
 	"\aProfile\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\x04R\x06userId\x12!\n" +
-	"\fprofile_name\x18\x02 \x01(\tR\vprofileName\x12\x10\n" +
-	"\x03bio\x18\x03 \x01(\tR\x03bio\x12\x1d\n" +
+	"\fprofile_name\x18\x02 \x01(\tR\vprofileName\x12\x15\n" +
+	"\x03bio\x18\x03 \x01(\tH\x00R\x03bio\x88\x01\x01\x12\"\n" +
 	"\n" +
-	"avatar_url\x18\x04 \x01(\tR\tavatarUrl\x12\x16\n" +
-	"\x06status\x18\x05 \x01(\tR\x06status\x12\x1b\n" +
-	"\tlast_seen\x18\x06 \x01(\tR\blastSeen\",\n" +
+	"avatar_url\x18\x04 \x01(\tH\x01R\tavatarUrl\x88\x01\x01\x12\x1b\n" +
+	"\x06status\x18\x05 \x01(\tH\x02R\x06status\x88\x01\x01\x127\n" +
+	"\tlast_seen\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\blastSeenB\x06\n" +
+	"\x04_bioB\r\n" +
+	"\v_avatar_urlB\t\n" +
+	"\a_status\"\xcc\x01\n" +
+	"\x14CreateProfileRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\x04R\x06userId\x12!\n" +
+	"\fprofile_name\x18\x02 \x01(\tR\vprofileName\x12\x15\n" +
+	"\x03bio\x18\x03 \x01(\tH\x00R\x03bio\x88\x01\x01\x12\"\n" +
+	"\n" +
+	"avatar_url\x18\x04 \x01(\tH\x01R\tavatarUrl\x88\x01\x01\x12\x1b\n" +
+	"\x06status\x18\x05 \x01(\tH\x02R\x06status\x88\x01\x01B\x06\n" +
+	"\x04_bioB\r\n" +
+	"\v_avatar_urlB\t\n" +
+	"\a_status\"8\n" +
+	"\x15CreateProfileResponse\x12\x1f\n" +
+	"\vstatus_code\x18\x01 \x01(\x03R\n" +
+	"statusCode\",\n" +
 	"\x11GetProfileRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\x04R\x06userId\"D\n" +
 	"\x12GetProfileResponse\x12.\n" +
-	"\aprofile\x18\x01 \x01(\v2\x14.alexchatapp.ProfileR\aprofile\"\x9f\x01\n" +
-	"\x14UpdateProfileRequest\x12!\n" +
-	"\fprofile_name\x18\x01 \x01(\tR\vprofileName\x12\x10\n" +
-	"\x03bio\x18\x02 \x01(\tR\x03bio\x12\x1d\n" +
+	"\aprofile\x18\x01 \x01(\v2\x14.alexchatapp.ProfileR\aprofile\"\xe2\x01\n" +
+	"\x14UpdateProfileRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\x04R\x06userId\x12&\n" +
+	"\fprofile_name\x18\x02 \x01(\tH\x00R\vprofileName\x88\x01\x01\x12\x15\n" +
+	"\x03bio\x18\x03 \x01(\tH\x01R\x03bio\x88\x01\x01\x12\"\n" +
 	"\n" +
-	"avatar_url\x18\x03 \x01(\tR\tavatarUrl\x12\x16\n" +
-	"\x06status\x18\x04 \x01(\tR\x06status\x12\x1b\n" +
-	"\tlast_seen\x18\x05 \x01(\tR\blastSeen\"3\n" +
-	"\x15UpdateProfileResponse\x12\x1a\n" +
-	"\bresponse\x18\x01 \x01(\tR\bresponseB\x1aZ\x18src/proto/profiles;protob\x06proto3"
+	"avatar_url\x18\x04 \x01(\tH\x02R\tavatarUrl\x88\x01\x01\x12\x1b\n" +
+	"\x06status\x18\x05 \x01(\tH\x03R\x06status\x88\x01\x01B\x0f\n" +
+	"\r_profile_nameB\x06\n" +
+	"\x04_bioB\r\n" +
+	"\v_avatar_urlB\t\n" +
+	"\a_status\"f\n" +
+	"\x15UpdateProfileResponse\x12\x1f\n" +
+	"\vstatus_code\x18\x01 \x01(\x03R\n" +
+	"statusCode\x12\x1f\n" +
+	"\bresponse\x18\x02 \x01(\tH\x00R\bresponse\x88\x01\x01B\v\n" +
+	"\t_response\"T\n" +
+	"\x19UpdateOnlineStatusRequest\x127\n" +
+	"\tlast_seen\x18\x01 \x01(\v2\x1a.google.protobuf.TimestampR\blastSeen\"=\n" +
+	"\x1aUpdateOnlineStatusResponse\x12\x1f\n" +
+	"\vstatus_code\x18\x01 \x01(\x03R\n" +
+	"statusCode2\xf6\x02\n" +
+	"\x0eProfileService\x12M\n" +
+	"\n" +
+	"GetProfile\x12\x1e.alexchatapp.GetProfileRequest\x1a\x1f.alexchatapp.GetProfileResponse\x12V\n" +
+	"\rCreateProfile\x12!.alexchatapp.CreateProfileRequest\x1a\".alexchatapp.CreateProfileResponse\x12V\n" +
+	"\rUpdateProfile\x12!.alexchatapp.UpdateProfileRequest\x1a\".alexchatapp.UpdateProfileResponse\x12e\n" +
+	"\x12UpdateOnlineStatus\x12&.alexchatapp.UpdateOnlineStatusRequest\x1a'.alexchatapp.UpdateOnlineStatusResponseB\x1aZ\x18src/proto/profiles;protob\x06proto3"
 
 var (
 	file_src_proto_profiles_proto_rawDescOnce sync.Once
@@ -352,21 +603,36 @@ func file_src_proto_profiles_proto_rawDescGZIP() []byte {
 	return file_src_proto_profiles_proto_rawDescData
 }
 
-var file_src_proto_profiles_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_src_proto_profiles_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_src_proto_profiles_proto_goTypes = []any{
-	(*Profile)(nil),               // 0: alexchatapp.Profile
-	(*GetProfileRequest)(nil),     // 1: alexchatapp.GetProfileRequest
-	(*GetProfileResponse)(nil),    // 2: alexchatapp.GetProfileResponse
-	(*UpdateProfileRequest)(nil),  // 3: alexchatapp.UpdateProfileRequest
-	(*UpdateProfileResponse)(nil), // 4: alexchatapp.UpdateProfileResponse
+	(*Profile)(nil),                    // 0: alexchatapp.Profile
+	(*CreateProfileRequest)(nil),       // 1: alexchatapp.CreateProfileRequest
+	(*CreateProfileResponse)(nil),      // 2: alexchatapp.CreateProfileResponse
+	(*GetProfileRequest)(nil),          // 3: alexchatapp.GetProfileRequest
+	(*GetProfileResponse)(nil),         // 4: alexchatapp.GetProfileResponse
+	(*UpdateProfileRequest)(nil),       // 5: alexchatapp.UpdateProfileRequest
+	(*UpdateProfileResponse)(nil),      // 6: alexchatapp.UpdateProfileResponse
+	(*UpdateOnlineStatusRequest)(nil),  // 7: alexchatapp.UpdateOnlineStatusRequest
+	(*UpdateOnlineStatusResponse)(nil), // 8: alexchatapp.UpdateOnlineStatusResponse
+	(*timestamppb.Timestamp)(nil),      // 9: google.protobuf.Timestamp
 }
 var file_src_proto_profiles_proto_depIdxs = []int32{
-	0, // 0: alexchatapp.GetProfileResponse.profile:type_name -> alexchatapp.Profile
-	1, // [1:1] is the sub-list for method output_type
-	1, // [1:1] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	9, // 0: alexchatapp.Profile.last_seen:type_name -> google.protobuf.Timestamp
+	0, // 1: alexchatapp.GetProfileResponse.profile:type_name -> alexchatapp.Profile
+	9, // 2: alexchatapp.UpdateOnlineStatusRequest.last_seen:type_name -> google.protobuf.Timestamp
+	3, // 3: alexchatapp.ProfileService.GetProfile:input_type -> alexchatapp.GetProfileRequest
+	1, // 4: alexchatapp.ProfileService.CreateProfile:input_type -> alexchatapp.CreateProfileRequest
+	5, // 5: alexchatapp.ProfileService.UpdateProfile:input_type -> alexchatapp.UpdateProfileRequest
+	7, // 6: alexchatapp.ProfileService.UpdateOnlineStatus:input_type -> alexchatapp.UpdateOnlineStatusRequest
+	4, // 7: alexchatapp.ProfileService.GetProfile:output_type -> alexchatapp.GetProfileResponse
+	2, // 8: alexchatapp.ProfileService.CreateProfile:output_type -> alexchatapp.CreateProfileResponse
+	6, // 9: alexchatapp.ProfileService.UpdateProfile:output_type -> alexchatapp.UpdateProfileResponse
+	8, // 10: alexchatapp.ProfileService.UpdateOnlineStatus:output_type -> alexchatapp.UpdateOnlineStatusResponse
+	7, // [7:11] is the sub-list for method output_type
+	3, // [3:7] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_src_proto_profiles_proto_init() }
@@ -374,15 +640,19 @@ func file_src_proto_profiles_proto_init() {
 	if File_src_proto_profiles_proto != nil {
 		return
 	}
+	file_src_proto_profiles_proto_msgTypes[0].OneofWrappers = []any{}
+	file_src_proto_profiles_proto_msgTypes[1].OneofWrappers = []any{}
+	file_src_proto_profiles_proto_msgTypes[5].OneofWrappers = []any{}
+	file_src_proto_profiles_proto_msgTypes[6].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_src_proto_profiles_proto_rawDesc), len(file_src_proto_profiles_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   5,
+			NumMessages:   9,
 			NumExtensions: 0,
-			NumServices:   0,
+			NumServices:   1,
 		},
 		GoTypes:           file_src_proto_profiles_proto_goTypes,
 		DependencyIndexes: file_src_proto_profiles_proto_depIdxs,
