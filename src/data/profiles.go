@@ -41,3 +41,9 @@ func (r *ProfilesRepository) GetProfileByID(user_id uint) (*models.Profile, erro
 	}
 	return &profile, nil
 }
+
+func (r *ProfilesRepository) DoesProfileExist(user_id uint) bool {
+	var profile models.Profile
+	err := r.db.First(&profile, user_id).Error
+	return err == nil
+}

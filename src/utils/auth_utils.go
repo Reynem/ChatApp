@@ -30,6 +30,24 @@ func ValidateUsername(username string) error {
 	return nil
 }
 
+// ValidateProfileName validates profilename format
+func ValidateProfileName(username string) error {
+	if len(username) < 3 {
+		return errors.New("username must contain at least 3 characters")
+	}
+	if len(username) > 50 {
+		return errors.New("username must not exceed 50 characters")
+	}
+
+	// Check that username contains only allowed characters
+	usernameRegex := regexp.MustCompile(`^[a-zA-Z0-9_-]+$`)
+	if !usernameRegex.MatchString(username) {
+		return errors.New("username can only contain letters, numbers, hyphens and underscores")
+	}
+
+	return nil
+}
+
 // ValidatePassword validates password strength
 func ValidatePassword(password string) error {
 	if len(password) < 8 {
