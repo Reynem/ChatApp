@@ -2,6 +2,7 @@ package alexchatapp
 
 import (
 	"alexchatapp/src/data"
+	"alexchatapp/src/models"
 	pb "alexchatapp/src/proto/profiles"
 	"alexchatapp/src/utils"
 	"context"
@@ -19,7 +20,8 @@ func NewProfilesServer(profile_repo *data.ProfilesRepository) *ProfileServer {
 	}
 }
 
-func (p *ProfileServer) RegisterProfile(ctx *context.Context, req *pb.CreateProfileRequest) (*pb.CreateProfileResponse, error) {
+func (p *ProfileServer) RegisterProfile(ctx context.Context, req *pb.CreateProfileRequest) (*pb.CreateProfileResponse, error) {
+	var new_profile models.Profile
 	if err := utils.ValidateProfileName(req.ProfileName); err != nil {
 		return &pb.CreateProfileResponse{
 			StatusCode: 400,
@@ -32,7 +34,15 @@ func (p *ProfileServer) RegisterProfile(ctx *context.Context, req *pb.CreateProf
 		}, errors.New("the user already has profile")
 	}
 
-	err := p.profile_repo.CreateProfile(uint(req.UserId), req.ProfileName)
+	new_profile = models.Profile{
+		User_id:      uint(req.UserId),
+		Profile_name: req.ProfileName,
+		Bio:          *req.Bio,
+		Avatar_url:   *req.AvatarUrl,
+		Status:       *req.Status,
+	}
+
+	err := p.profile_repo.CreateProfileByModel(new_profile)
 	if err != nil {
 		return &pb.CreateProfileResponse{
 			StatusCode: 400,
@@ -40,6 +50,41 @@ func (p *ProfileServer) RegisterProfile(ctx *context.Context, req *pb.CreateProf
 	}
 
 	return &pb.CreateProfileResponse{
+		StatusCode: 200,
+	}, nil
+}
+
+func (p *ProfileServer) UpdateProfile(ctx context.Context, req *pb.UpdateProfileRequest) (*pb.UpdateProfileResponse, error) {
+	var updated_profile models.Profile
+
+	if err := utils.ValidateProfileName(*req.ProfileName); err != nil {
+		return &pb.UpdateProfileResponse{
+			StatusCode: 400,
+		}, err
+	}
+
+	var profile, err = p.profile_repo.GetProfileByID(uint(req.UserId))
+	if err != nil {
+		return &pb.UpdateProfileResponse{
+			StatusCode: 400,
+		}, err
+	}
+
+	updated_profile = models.Profile{
+		User_id:      profile.User_id,
+		Profile_name: *req.ProfileName,
+		Bio:          *req.Bio,
+		Avatar_url:   *req.AvatarUrl,
+		Status:       *req.Status,
+	}
+
+	if err := p.profile_repo.UpdateProfile(&updated_profile); err != nil {
+		return &pb.UpdateProfileResponse{
+			StatusCode: 400,
+		}, err
+	}
+
+	return &pb.UpdateProfileResponse{
 		StatusCode: 200,
 	}, nil
 }

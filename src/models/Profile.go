@@ -5,7 +5,7 @@ import (
 )
 
 type Profile struct {
-	User_id      uint      `json:"id"`
+	User_id      uint      `gorm:"primaryKey" json:"id"`
 	Profile_name string    `json:"profile_name"`
 	Bio          string    `json:"bio"`
 	Avatar_url   string    `json:"avatar_url"`

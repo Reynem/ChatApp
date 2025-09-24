@@ -15,12 +15,27 @@ func NewProfilesRepository(_db *gorm.DB) *ProfilesRepository {
 	return &ProfilesRepository{db: _db}
 }
 
-func (r *ProfilesRepository) CreateProfile(user_id uint, profile_name string) error {
+func (r *ProfilesRepository) CreateProfile(
+	user_id uint,
+	profile_name string,
+	bio string,
+	avatar_url string,
+	status string,
+) error {
 	var new_profile = models.Profile{
 		User_id:      user_id,
 		Profile_name: profile_name,
+		Bio:          bio,
+		Avatar_url:   avatar_url,
+		Status:       status,
 	}
 
+	return r.db.Create(new_profile).Error
+}
+
+func (r *ProfilesRepository) CreateProfileByModel(
+	new_profile models.Profile,
+) error {
 	return r.db.Create(new_profile).Error
 }
 
