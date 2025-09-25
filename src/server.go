@@ -3,7 +3,8 @@ package alexchatapp
 import (
 	"alexchatapp/src/data"
 	"alexchatapp/src/jwt"
-	pb "alexchatapp/src/proto/auth"
+	pba "alexchatapp/src/proto/auth"
+	pbp "alexchatapp/src/proto/profiles"
 	"log"
 	"net"
 	"os"
@@ -33,16 +34,19 @@ func Server() {
 	// Create repositories
 	chat_repo := data.NewChatRepository(db)
 	auth_repo := data.NewUsersRepository(db)
+	profile_repo := data.NewProfilesRepository(db)
 
 	// Create authentication server
-	authServer := NewAuthServer(chat_repo, auth_repo, &jwt_key)
+	authServer := NewAuthServer(chat_repo, auth_repo, profile_repo, &jwt_key)
+	profileServer := NewProfilesServer(profile_repo)
 
 	// Create gRPC server
 	grpcServer := grpc.NewServer(
 		grpc.UnaryInterceptor(jwt.JWTUnaryInterceptor()),
 	)
 
-	pb.RegisterAuthServiceServer(grpcServer, authServer)
+	pba.RegisterAuthServiceServer(grpcServer, authServer)
+	pbp.RegisterProfileServiceServer(grpcServer, profileServer)
 
 	// Start server
 	listener, err := net.Listen("tcp", ":50051")

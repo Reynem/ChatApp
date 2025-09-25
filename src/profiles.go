@@ -112,17 +112,21 @@ func (p *ProfileServer) GetProfileByID(ctx context.Context, req *pb.GetProfileRe
 	}, nil
 }
 
-func (p *ProfileServer) UpdateOnlineStatus(ctx context.Context, req *pb.UpdateOnlineStatusRequest) (pb.UpdateOnlineStatusResponse, error) {
+func (p *ProfileServer) UpdateOnlineStatus(ctx context.Context, req *pb.UpdateOnlineStatusRequest) (*pb.UpdateOnlineStatusResponse, error) {
 	var profile, err = p.profile_repo.GetProfileByID(uint(req.UserId))
 	if err != nil {
-		return pb.UpdateOnlineStatusResponse{
+		return &pb.UpdateOnlineStatusResponse{
 			StatusCode: 400,
 		}, err
 	}
 
 	profile.Last_seen = req.LastSeen.AsTime()
 
-	return pb.UpdateOnlineStatusResponse{
+	if err := p.profile_repo.UpdateProfile(profile); err != nil {
+		return &pb.UpdateOnlineStatusResponse{StatusCode: 400}, err
+	}
+
+	return &pb.UpdateOnlineStatusResponse{
 		StatusCode: 200,
 	}, nil
 }
