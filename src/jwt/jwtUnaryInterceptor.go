@@ -18,6 +18,7 @@ type contextKey string
 const (
 	// UsernameKey is the context key for storing authenticated username
 	UsernameKey contextKey = "username"
+	UserIdKey   contextKey = "user_id"
 )
 
 // JWTUnaryInterceptor creates a production-ready JWT validation interceptor
@@ -47,7 +48,7 @@ func JWTUnaryInterceptor() grpc.UnaryServerInterceptor {
 		}
 
 		// Validate JWT token
-		username, err := jwtKey.ValidateToken(token)
+		username, user_id, err := jwtKey.ValidateToken(token)
 		if err != nil {
 			log.Printf("JWT validation failed: %v", err)
 			return nil, status.Error(codes.Unauthenticated, "Invalid or expired token")
@@ -55,6 +56,9 @@ func JWTUnaryInterceptor() grpc.UnaryServerInterceptor {
 
 		// Add username to context for downstream handlers
 		ctx = context.WithValue(ctx, UsernameKey, username)
+
+		// Add user_id to context
+		ctx = context.WithValue(ctx, UserIdKey, user_id)
 
 		return handler(ctx, req)
 	}
