@@ -444,7 +444,8 @@ func (x *UpdateProfileResponse) GetResponse() string {
 
 type UpdateOnlineStatusRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	LastSeen      *timestamppb.Timestamp `protobuf:"bytes,1,opt,name=last_seen,json=lastSeen,proto3" json:"last_seen,omitempty"` // Ignore
+	UserId        uint64                 `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	LastSeen      *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=last_seen,json=lastSeen,proto3" json:"last_seen,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -477,6 +478,13 @@ func (x *UpdateOnlineStatusRequest) ProtoReflect() protoreflect.Message {
 // Deprecated: Use UpdateOnlineStatusRequest.ProtoReflect.Descriptor instead.
 func (*UpdateOnlineStatusRequest) Descriptor() ([]byte, []int) {
 	return file_src_proto_profiles_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *UpdateOnlineStatusRequest) GetUserId() uint64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
 }
 
 func (x *UpdateOnlineStatusRequest) GetLastSeen() *timestamppb.Timestamp {
@@ -578,9 +586,10 @@ const file_src_proto_profiles_proto_rawDesc = "" +
 	"\vstatus_code\x18\x01 \x01(\x03R\n" +
 	"statusCode\x12\x1f\n" +
 	"\bresponse\x18\x02 \x01(\tH\x00R\bresponse\x88\x01\x01B\v\n" +
-	"\t_response\"T\n" +
-	"\x19UpdateOnlineStatusRequest\x127\n" +
-	"\tlast_seen\x18\x01 \x01(\v2\x1a.google.protobuf.TimestampR\blastSeen\"=\n" +
+	"\t_response\"m\n" +
+	"\x19UpdateOnlineStatusRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\x04R\x06userId\x127\n" +
+	"\tlast_seen\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\blastSeen\"=\n" +
 	"\x1aUpdateOnlineStatusResponse\x12\x1f\n" +
 	"\vstatus_code\x18\x01 \x01(\x03R\n" +
 	"statusCode2\xf6\x02\n" +

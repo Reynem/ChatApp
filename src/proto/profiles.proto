@@ -49,7 +49,8 @@ message UpdateProfileResponse {
 }
 
 message UpdateOnlineStatusRequest {
-    google.protobuf.Timestamp last_seen = 1; // Ignore
+    uint64 user_id = 1;
+    google.protobuf.Timestamp last_seen = 2;
 }
 
 message UpdateOnlineStatusResponse {

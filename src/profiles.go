@@ -88,3 +88,41 @@ func (p *ProfileServer) UpdateProfile(ctx context.Context, req *pb.UpdateProfile
 		StatusCode: 200,
 	}, nil
 }
+
+func (p *ProfileServer) GetProfileByID(ctx context.Context, req *pb.GetProfileRequest) (*pb.GetProfileResponse, error) {
+	var profile *pb.Profile
+
+	var profileModel, err = p.profile_repo.GetProfileByID(uint(req.UserId))
+	if err != nil {
+		return &pb.GetProfileResponse{
+			Profile: nil,
+		}, err
+	}
+
+	profile = &pb.Profile{
+		UserId:      uint64(profileModel.User_id),
+		ProfileName: profileModel.Profile_name,
+		Bio:         &profileModel.Bio,
+		AvatarUrl:   &profileModel.Avatar_url,
+		Status:      &profileModel.Status,
+	}
+
+	return &pb.GetProfileResponse{
+		Profile: profile,
+	}, nil
+}
+
+func (p *ProfileServer) UpdateOnlineStatus(ctx context.Context, req *pb.UpdateOnlineStatusRequest) (pb.UpdateOnlineStatusResponse, error) {
+	var profile, err = p.profile_repo.GetProfileByID(uint(req.UserId))
+	if err != nil {
+		return pb.UpdateOnlineStatusResponse{
+			StatusCode: 400,
+		}, err
+	}
+
+	profile.Last_seen = req.LastSeen.AsTime()
+
+	return pb.UpdateOnlineStatusResponse{
+		StatusCode: 200,
+	}, nil
+}
