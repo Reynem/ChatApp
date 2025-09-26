@@ -75,7 +75,7 @@ func extractTokenFromMetadata(ctx context.Context) (string, error) {
 	if authHeaders := meta.Get("authorization"); len(authHeaders) > 0 {
 		authHeader := authHeaders[0]
 		if strings.HasPrefix(strings.ToLower(authHeader), "bearer ") {
-			return strings.TrimPrefix(authHeader, authHeader[7:]), nil
+			return authHeader[7:], nil
 		}
 	}
 
@@ -110,4 +110,10 @@ func isPublicMethod(method string) bool {
 func GetUsernameFromContext(ctx context.Context) (string, bool) {
 	username, ok := ctx.Value(UsernameKey).(string)
 	return username, ok
+}
+
+// GetUsernameFromContext extracts the authenticated user_id from context
+func GetUserIdFromContext(ctx context.Context) (uint64, bool) {
+	userID, ok := ctx.Value(UserIdKey).(uint64)
+	return userID, ok
 }
