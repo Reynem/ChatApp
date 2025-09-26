@@ -3,9 +3,11 @@ package alexchatapp
 import (
 	"context"
 	"log"
+	"time"
 
 	"alexchatapp/src/data"
 	"alexchatapp/src/jwt"
+	"alexchatapp/src/models"
 	pb "alexchatapp/src/proto/auth"
 	"alexchatapp/src/utils"
 )
@@ -13,17 +15,19 @@ import (
 // AuthServer implements AuthService from proto file
 type AuthServer struct {
 	pb.UnimplementedAuthServiceServer
-	chat_repo  *data.ChatRepository
-	auth_repo  *data.UsersRepository
-	jwtService *jwt.JwtKey
+	chat_repo    *data.ChatRepository
+	auth_repo    *data.UsersRepository
+	profile_repo *data.ProfilesRepository
+	jwtService   *jwt.JwtKey
 }
 
 // NewAuthServer creates a new authentication server instance
-func NewAuthServer(chat_repo *data.ChatRepository, auth_repo *data.UsersRepository, secret_key *jwt.JwtKey) *AuthServer {
+func NewAuthServer(chat_repo *data.ChatRepository, auth_repo *data.UsersRepository, profile_repo *data.ProfilesRepository, secret_key *jwt.JwtKey) *AuthServer {
 	return &AuthServer{
-		chat_repo:  chat_repo,
-		auth_repo:  auth_repo,
-		jwtService: secret_key,
+		chat_repo:    chat_repo,
+		auth_repo:    auth_repo,
+		profile_repo: profile_repo,
+		jwtService:   secret_key,
 	}
 }
 
@@ -62,7 +66,24 @@ func (s *AuthServer) Register(ctx context.Context, req *pb.RegisterRequest) (*pb
 	}
 
 	// Add user to database
-	_, err := s.auth_repo.RegisterUser(req.Username, req.Email, req.Password)
+	user, err := s.auth_repo.RegisterUser(req.Username, req.Email, req.Password)
+	if err != nil {
+		return &pb.Response{
+			Success:   false,
+			ErrorText: err.Error(),
+		}, nil
+	}
+
+	var profile = models.Profile{
+		User_id:      user.ID,
+		Profile_name: user.UserName,
+		Bio:          "",
+		Avatar_url:   "",
+		Status:       "",
+		Last_seen:    time.Now(),
+	}
+
+	err = s.profile_repo.CreateProfileByModel(profile)
 	if err != nil {
 		return &pb.Response{
 			Success:   false,
@@ -71,7 +92,7 @@ func (s *AuthServer) Register(ctx context.Context, req *pb.RegisterRequest) (*pb
 	}
 
 	// Generate token
-	token, err := s.jwtService.GenerateToken(req.Username)
+	token, err := s.jwtService.GenerateToken(user.UserName, uint64(user.ID))
 	if err != nil {
 		log.Printf("JWT generation error: %v", err)
 		return &pb.Response{
@@ -96,7 +117,7 @@ func (s *AuthServer) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Respo
 		}, nil
 	}
 
-	_, err := s.auth_repo.AuthenticateUser(req.Username, req.Password)
+	user, err := s.auth_repo.AuthenticateUser(req.Username, req.Password)
 	if err != nil {
 		return &pb.Response{
 			Success:   false,
@@ -105,7 +126,7 @@ func (s *AuthServer) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Respo
 	}
 
 	// Generate token
-	token, err := s.jwtService.GenerateToken(req.Username)
+	token, err := s.jwtService.GenerateToken(user.UserName, uint64(user.ID))
 	if err != nil {
 		log.Printf("JWT generation error: %v", err)
 		return &pb.Response{

@@ -2,11 +2,13 @@ package alexchatapp
 
 import (
 	"alexchatapp/src/data"
+	"alexchatapp/src/jwt"
 	"alexchatapp/src/models"
 	pb "alexchatapp/src/proto/profiles"
 	"alexchatapp/src/utils"
 	"context"
 	"errors"
+	"log"
 )
 
 type ProfileServer struct {
@@ -20,22 +22,31 @@ func NewProfilesServer(profile_repo *data.ProfilesRepository) *ProfileServer {
 	}
 }
 
-func (p *ProfileServer) RegisterProfile(ctx context.Context, req *pb.CreateProfileRequest) (*pb.CreateProfileResponse, error) {
+func (p *ProfileServer) CreateProfile(ctx context.Context, req *pb.CreateProfileRequest) (*pb.CreateProfileResponse, error) {
 	var new_profile models.Profile
+
+	userIDValue, ok := jwt.GetUserIdFromContext(ctx)
+	log.Println(userIDValue)
+	if !ok {
+		return nil, errors.New("user not authenticated")
+	}
+
+	userID := uint(userIDValue)
+
 	if err := utils.ValidateProfileName(req.ProfileName); err != nil {
 		return &pb.CreateProfileResponse{
 			StatusCode: 400,
 		}, err
 	}
 
-	if isExists := p.profile_repo.DoesProfileExist(uint(req.UserId)); isExists {
+	if isExists := p.profile_repo.DoesProfileExist(userID); isExists {
 		return &pb.CreateProfileResponse{
 			StatusCode: 400,
 		}, errors.New("the user already has profile")
 	}
 
 	new_profile = models.Profile{
-		User_id:      uint(req.UserId),
+		User_id:      userID,
 		Profile_name: req.ProfileName,
 		Bio:          *req.Bio,
 		Avatar_url:   *req.AvatarUrl,
@@ -57,13 +68,21 @@ func (p *ProfileServer) RegisterProfile(ctx context.Context, req *pb.CreateProfi
 func (p *ProfileServer) UpdateProfile(ctx context.Context, req *pb.UpdateProfileRequest) (*pb.UpdateProfileResponse, error) {
 	var updated_profile models.Profile
 
+	userIDValue, ok := jwt.GetUserIdFromContext(ctx)
+	log.Println(userIDValue)
+	if !ok {
+		return nil, errors.New("user not authenticated")
+	}
+
+	userID := uint(userIDValue)
+
 	if err := utils.ValidateProfileName(*req.ProfileName); err != nil {
 		return &pb.UpdateProfileResponse{
 			StatusCode: 400,
 		}, err
 	}
 
-	var profile, err = p.profile_repo.GetProfileByID(uint(req.UserId))
+	var profile, err = p.profile_repo.GetProfileByID(userID)
 	if err != nil {
 		return &pb.UpdateProfileResponse{
 			StatusCode: 400,
@@ -89,10 +108,22 @@ func (p *ProfileServer) UpdateProfile(ctx context.Context, req *pb.UpdateProfile
 	}, nil
 }
 
-func (p *ProfileServer) GetProfileByID(ctx context.Context, req *pb.GetProfileRequest) (*pb.GetProfileResponse, error) {
+func (p *ProfileServer) GetProfile(ctx context.Context, req *pb.GetProfileRequest) (*pb.GetProfileResponse, error) {
 	var profile *pb.Profile
 
-	var profileModel, err = p.profile_repo.GetProfileByID(uint(req.UserId))
+	userIDValue, ok := jwt.GetUserIdFromContext(ctx)
+	log.Println(userIDValue)
+	if !ok {
+		return nil, errors.New("user not authenticated")
+	}
+
+	userID := uint(userIDValue)
+
+	if req.TargetUserId != nil {
+		userID = uint(*req.TargetUserId)
+	}
+
+	var profileModel, err = p.profile_repo.GetProfileByID(userID)
 	if err != nil {
 		return &pb.GetProfileResponse{
 			Profile: nil,
@@ -113,7 +144,15 @@ func (p *ProfileServer) GetProfileByID(ctx context.Context, req *pb.GetProfileRe
 }
 
 func (p *ProfileServer) UpdateOnlineStatus(ctx context.Context, req *pb.UpdateOnlineStatusRequest) (*pb.UpdateOnlineStatusResponse, error) {
-	var profile, err = p.profile_repo.GetProfileByID(uint(req.UserId))
+	userIDValue, ok := jwt.GetUserIdFromContext(ctx)
+	log.Println(userIDValue)
+	if !ok {
+		return nil, errors.New("user not authenticated")
+	}
+
+	userID := uint(userIDValue)
+
+	var profile, err = p.profile_repo.GetProfileByID(userID)
 	if err != nil {
 		return &pb.UpdateOnlineStatusResponse{
 			StatusCode: 400,
