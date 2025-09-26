@@ -30,13 +30,13 @@ func (r *ProfilesRepository) CreateProfile(
 		Status:       status,
 	}
 
-	return r.db.Create(new_profile).Error
+	return r.db.Create(&new_profile).Error
 }
 
 func (r *ProfilesRepository) CreateProfileByModel(
 	new_profile models.Profile,
 ) error {
-	return r.db.Create(new_profile).Error
+	return r.db.Create(&new_profile).Error
 }
 
 func (r *ProfilesRepository) UpdateProfile(profile *models.Profile) error {

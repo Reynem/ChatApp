@@ -19,5 +19,10 @@ func Initialize(dsn string) (*gorm.DB, error) {
 		return nil, err
 	}
 
+	err = db.AutoMigrate(&models.Profile{})
+	if err != nil {
+		return nil, err
+	}
+
 	return db, nil
 }
