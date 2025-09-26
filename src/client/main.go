@@ -1,9 +1,12 @@
 package main
 
 import (
-	authtest "alexchatapp/src/tests"
+	test "alexchatapp/src/tests"
+	"fmt"
 )
 
 func main() {
-	authtest.AuthClientExample()
+	test.AuthClientExample()
+	fmt.Print("\nNEW EXAMPLE\n")
+	test.ProfileClientExample()
 }
